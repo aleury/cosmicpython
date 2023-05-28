@@ -104,8 +104,5 @@ def add_stock(postgres_session):
 
 @pytest.fixture
 def restart_api():
-    app_path = Path(__file__).parent / "flask_app.py"
-    print(app_path)
-    app_path.touch()
     time.sleep(0.5)
     wait_for_webapp_to_come_up()
