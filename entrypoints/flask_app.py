@@ -19,14 +19,12 @@ def allocate_endpoint():
 
     session = get_session()
     batch_repo = repository.SqlAlchemyRepository(session)
-    line = domain.OrderLine(
-        json["order_id"],
-        json["sku"],
-        json["qty"],
-    )
+    order_id = json["order_id"]
+    sku = json["sku"]
+    qty = json["qty"]
 
     try:
-        batchref = services.allocate(line, batch_repo, session)
+        batchref = services.allocate(order_id, sku, qty, batch_repo, session)
     except (domain.OutOfStock, services.InvalidSku) as e:
         return {"message": str(e)}, 400
 

@@ -1,3 +1,5 @@
+from os import walk
+
 import domain
 from adapters.repository import Repository
 
@@ -10,11 +12,12 @@ def is_valid_sku(sku: str, batches: list[domain.Batch]) -> bool:
     return sku in {b.sku for b in batches}
 
 
-def allocate(line: domain.OrderLine, repo: Repository, session) -> str:
+def allocate(order_id: str, sku: str, qty: int, repo: Repository, session) -> str:
     batches = repo.list()
-    if not is_valid_sku(line.sku, batches):
-        raise InvalidSku(f"Invalid sku {line.sku}")
+    if not is_valid_sku(sku, batches):
+        raise InvalidSku(f"Invalid sku {sku}")
 
+    line = domain.OrderLine(order_id, sku, qty)
     batchref = domain.allocate(line, batches)
 
     session.commit()
